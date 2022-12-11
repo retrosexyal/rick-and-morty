@@ -1,10 +1,12 @@
 const ROOT = document.querySelector("#root");
 const url = "https://rickandmortyapi.com/api/character";
 const CLOCK = document.querySelector("#clock");
-let directory = 'main';
+let directory = "main";
+let arrOfFavorites = [];
+let newArr = [];
 
 function start() {
-  directory = 'main'
+  directory = "main";
   fetch(url)
     .then((resp) => resp.json())
     .then(
@@ -15,7 +17,19 @@ function start() {
           })
           .join("")
           .toString())
-    );
+    )
+    .then(()=>{
+    CARDS = document.querySelectorAll(".card-container");
+    arrOfFavorites.forEach(el=>{
+      CARDS.forEach(elem=>{
+        if (elem.id === `idcard${el.id}`) {
+          elem.querySelector('.addbutton').style.backgroundColor = "green";
+          elem.querySelector('.addbutton').innerHTML = "added to favorites";
+          elem.querySelector('.delbutton').disabled = false;
+        }
+      })
+    })
+    });
 }
 start();
 function createCard(name, species, image, id) {
@@ -41,7 +55,6 @@ const seconds = time.getSeconds();
 
 function testingTime(time, limit) {
   if (time > limit) {
-    time++;
     time = `0${0}`;
   } else if (time.toString().length < 2) {
     time = `0${time}`;
@@ -52,6 +65,8 @@ function testingTime(time, limit) {
 function clock(hours, minutes, seconds) {
   setInterval(() => {
     seconds++;
+    if (seconds > 59) minutes++;
+    if (minutes > 59) hours++;
     seconds = testingTime(seconds, 59);
     minutes = testingTime(minutes, 59);
     hours = testingTime(hours, 23);
@@ -59,7 +74,7 @@ function clock(hours, minutes, seconds) {
   }, 1000);
 }
 CLOCK.innerHTML = `${hours}:${minuts}:${seconds}`;
-clock(hours, minuts,seconds);
+clock(hours, minuts, seconds);
 
 //search____________________________
 const INPUT = document.querySelector("#input");
@@ -76,23 +91,30 @@ INPUT.addEventListener("change", (e) => {
         })
         .join("")
         .toString();
-    });
+    })
+    .then(()=>{
+      CARDS = document.querySelectorAll(".card-container");
+      arrOfFavorites.forEach(el=>{
+        CARDS.forEach(elem=>{
+          if (elem.id === `idcard${el.id}`) {
+            elem.querySelector('.addbutton').style.backgroundColor = "green";
+            elem.querySelector('.addbutton').innerHTML = "added to favorites";
+            elem.querySelector('.delbutton').disabled = false;
+          }
+        })
+      })
+      });
 });
 
 //favorites___________________
-let arrOfFavorites = [];
-let newArr = [];
-
 
 
 function addToFavorites(id) {
-
   const CARDBUTTON = document.querySelector(`#idcard${id} .addbutton`);
   const DELBUTTON = document.querySelector(`#idcard${id} .delbutton`);
 
-
-  CARDBUTTON.style.backgroundColor = 'green';
-  CARDBUTTON.innerHTML = 'added to favorites';
+  CARDBUTTON.style.backgroundColor = "green";
+  CARDBUTTON.innerHTML = "added to favorites";
   DELBUTTON.disabled = false;
 
   fetch(url)
@@ -105,7 +127,7 @@ function addToFavorites(id) {
 }
 
 function createFavorites() {
-  directory  = 'favorites';
+  directory = "favorites";
   let status = true;
   arrOfFavorites.forEach((e) => {
     newArr.forEach((e1) => {
@@ -122,21 +144,21 @@ function createFavorites() {
     })
     .join("")
     .toString();
-  const ADDBUTTONS = document.querySelectorAll('.addbutton');
-  const DELBUTTONS = document.querySelectorAll('.delbutton');
-  ADDBUTTONS.forEach(addBtn=>{
+  const ADDBUTTONS = document.querySelectorAll(".addbutton");
+  const DELBUTTONS = document.querySelectorAll(".delbutton");
+  ADDBUTTONS.forEach((addBtn) => {
     addBtn.disabled = true;
   });
-  DELBUTTONS.forEach(delBtn=>{
+  DELBUTTONS.forEach((delBtn) => {
     delBtn.disabled = false;
-  })
+  });
 }
 
 function deleteFromFavorites(id) {
   const CARDBUTTON = document.querySelector(`#idcard${id} .addbutton`);
   const DELBUTTON = document.querySelector(`#idcard${id} .delbutton`);
-  CARDBUTTON.style.backgroundColor = '';
-  CARDBUTTON.innerHTML = 'add to favorites';
+  CARDBUTTON.style.backgroundColor = "";
+  CARDBUTTON.innerHTML = "add to favorites";
   DELBUTTON.disabled = true;
   newArr = newArr.map((e) => {
     if (e.id === id) e = "";
@@ -144,20 +166,20 @@ function deleteFromFavorites(id) {
   });
   newArr = newArr.filter((e) => e !== "");
   arrOfFavorites = newArr.filter((e) => e !== "");
-  if (directory === 'favorites'){
-  ROOT.innerHTML = arrOfFavorites
-    .map((el) => {
-      return createCard(el.name, el.species, el.image, el.id);
-    })
-    .join("")
-    .toString();
-    const ADDBUTTONS = document.querySelectorAll('.addbutton');
-    const DELBUTTONS = document.querySelectorAll('.delbutton');
-    ADDBUTTONS.forEach(addBtn=>{
+  if (directory === "favorites") {
+    ROOT.innerHTML = arrOfFavorites
+      .map((el) => {
+        return createCard(el.name, el.species, el.image, el.id);
+      })
+      .join("")
+      .toString();
+    const ADDBUTTONS = document.querySelectorAll(".addbutton");
+    const DELBUTTONS = document.querySelectorAll(".delbutton");
+    ADDBUTTONS.forEach((addBtn) => {
       addBtn.disabled = true;
     });
-    DELBUTTONS.forEach(delBtn=>{
+    DELBUTTONS.forEach((delBtn) => {
       delBtn.disabled = false;
-    })
+    });
   }
 }
