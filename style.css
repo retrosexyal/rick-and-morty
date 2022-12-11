@@ -18,6 +18,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin: 0 0 20px;
 }
 .img-container{
     width: 100%;
@@ -31,3 +32,24 @@
     width: 80%;
     object-fit: cover;
 }
+
+#clock{
+    width: 10vw;
+    height: 5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header{
+    display: flex;
+    justify-content: space-between;
+}
+
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
